@@ -26,9 +26,14 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.event.IModBusEvent;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.event.lifecycle.ParallelDispatchEvent;
 import net.neoforged.fml.i18n.FMLTranslations;
@@ -48,6 +53,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.VisibleForTesting;
+import xyz.bluspring.kilt.Kilt;
+import xyz.bluspring.kilt.loader.KiltLoader;
+import xyz.bluspring.kilt.loader.mod.NeoForgeMod;
 
 /**
  * Contains the logic to load mods, i.e. turn the {@link LoadingModList} into the {@link ModList},
@@ -97,7 +105,9 @@ public final class ModLoader {
 
         ForgeFeature.registerFeature("javaVersion", ForgeFeature.VersionFeatureTest.forVersionString(IModInfo.DependencySide.BOTH, System.getProperty("java.version")));
         ForgeFeature.registerFeature("openGLVersion", ForgeFeature.VersionFeatureTest.forVersionString(IModInfo.DependencySide.CLIENT, ImmediateWindowHandler.getGLVersion()));
-        FMLLoader.backgroundScanHandler.waitForScanToComplete(periodicTask);
+
+        // Kilt: get rid of FML's entire loading sequence and use Kilt's directly instead
+        /*FMLLoader.backgroundScanHandler.waitForScanToComplete(periodicTask);
         final ModList modList = ModList.of(loadingModList.getModFiles().stream().map(ModFileInfo::getFile).toList(),
                 loadingModList.getMods());
 
@@ -138,6 +148,33 @@ public final class ModLoader {
         }
         modList.setLoadedMods(modContainers);
         ModLoader.modList = modList;
+        */
+
+        KiltLoader.Companion.getInstance().loadMods();
+        Kilt.Companion.load(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER);
+
+        for (NeoForgeMod mod : KiltLoader.Companion.getInstance().getMods()) {
+            NeoForgeModConfigEvents.loading(mod.getModId()).register(it -> {
+                var prev = ModLoadingContext.get().getActiveContainer();
+                ModLoadingContext.get().setActiveContainer(mod.getContainer());
+                mod.getEventBus().post(new ModConfigEvent.Loading(it));
+                ModLoadingContext.get().setActiveContainer(prev);
+            });
+
+            NeoForgeModConfigEvents.reloading(mod.getModId()).register(it -> {
+                var prev = ModLoadingContext.get().getActiveContainer();
+                ModLoadingContext.get().setActiveContainer(mod.getContainer());
+                mod.getEventBus().post(new ModConfigEvent.Reloading(it));
+                ModLoadingContext.get().setActiveContainer(prev);
+            });
+
+            NeoForgeModConfigEvents.unloading(mod.getModId()).register(it -> {
+                var prev = ModLoadingContext.get().getActiveContainer();
+                ModLoadingContext.get().setActiveContainer(mod.getContainer());
+                mod.getEventBus().post(new ModConfigEvent.Unloading(it));
+                ModLoadingContext.get().setActiveContainer(prev);
+            });
+        }
 
         constructMods(syncExecutor, parallelExecutor, periodicTask);
     }

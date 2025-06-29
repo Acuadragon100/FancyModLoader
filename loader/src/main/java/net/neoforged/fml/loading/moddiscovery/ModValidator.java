@@ -4,7 +4,7 @@
  */
 
 package net.neoforged.fml.loading.moddiscovery;
-
+/*
 import com.mojang.logging.LogUtils;
 import cpw.mods.modlauncher.api.IModuleLayerManager;
 import cpw.mods.modlauncher.api.ITransformationService;
@@ -23,8 +23,9 @@ import net.neoforged.fml.loading.modscan.BackgroundScanHandler;
 import net.neoforged.neoforgespi.locating.IModFile;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+ */
 
-public class ModValidator {
+public class ModValidator {/*
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Map<IModFile.Type, List<ModFile>> modFiles;
     private final List<ModFile> candidatePlugins;
@@ -101,4 +102,4 @@ public class ModValidator {
         loadingModList.addForScanning(backgroundScanHandler);
         return backgroundScanHandler;
     }
-}
+*/}

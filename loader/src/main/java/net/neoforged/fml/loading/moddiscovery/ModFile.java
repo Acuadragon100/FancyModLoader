@@ -38,6 +38,7 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
+import xyz.bluspring.kilt.loader.mod.NeoForgeMod;
 
 @ApiStatus.Internal
 public class ModFile implements IModFile {
@@ -75,6 +76,25 @@ public class ModFile implements IModFile {
         modFileType = Objects.requireNonNull(type, "type");
         jarVersion = Optional.ofNullable(manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION)).orElse("0.0NONE");
         this.modFileInfo = ModFileParser.readModList(this, this.parser);
+    }
+
+    public ModFile(NeoForgeMod kiltMod) {
+        this.jarVersion = kiltMod.getVersion().toString();
+        this.parser = ModFileParser::modsTomlParser;
+        this.jar = kiltMod.getSecureJar().get();
+
+        if (kiltMod.getManifest() != null && kiltMod.getManifest().getMainAttributes() != null) {
+            var library = kiltMod.getManifest().getMainAttributes().get("FMLLIBRARY");
+            if (library != null && library instanceof String str) {
+                this.modFileType = Type.valueOf(str);
+            } else {
+                this.modFileType = Type.MOD;
+            }
+        } else {
+            this.modFileType = Type.MOD;
+        }
+
+        this.manifest = kiltMod.getManifest();
     }
 
     @Override

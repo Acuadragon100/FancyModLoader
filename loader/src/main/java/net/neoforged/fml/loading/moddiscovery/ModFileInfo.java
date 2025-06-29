@@ -37,6 +37,7 @@ import net.neoforged.neoforgespi.language.MavenVersionAdapter;
 import net.neoforged.neoforgespi.locating.InvalidModFileException;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
+import xyz.bluspring.kilt.loader.mod.NeoForgeMod;
 
 public class ModFileInfo implements IModFileInfo, IConfigurable {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -96,6 +97,13 @@ public class ModFileInfo implements IModFileInfo, IConfigurable {
                     this.mods.stream().map(IModInfo::getModId).collect(Collectors.joining(",", "{", "}")),
                     this.mods.stream().map(IModInfo::getVersion).map(Objects::toString).collect(Collectors.joining(",", "{", "}")));
         }
+    }
+
+    @ApiStatus.Internal
+    public ModFileInfo(NeoForgeMod kiltMod) {
+        this.config = kiltMod.getConfig();
+        this.modFile = new ModFile(kiltMod);
+
     }
 
     public ModFileInfo(final ModFile file, final IConfigurable config, Consumer<IModFileInfo> configFileConsumer, final List<LanguageSpec> languageSpecs) {
