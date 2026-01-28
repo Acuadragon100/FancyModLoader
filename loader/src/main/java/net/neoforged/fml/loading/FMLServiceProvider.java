@@ -5,6 +5,7 @@
 
 package net.neoforged.fml.loading;
 
+/*
 import static net.neoforged.fml.loading.LogMarkers.CORE;
 import static net.neoforged.fml.loading.LogMarkers.LOADING;
 
@@ -31,9 +32,10 @@ import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.coremod.ICoreMod;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
+ */
 
-public class FMLServiceProvider implements ITransformationService {
-    private static final Logger LOGGER = LogUtils.getLogger();
+public class FMLServiceProvider /*implements ITransformationService*/ {
+    /*private static final Logger LOGGER = LogUtils.getLogger();
     private ArgumentAcceptingOptionSpec<String> modsOption;
     private ArgumentAcceptingOptionSpec<String> modListsOption;
     private ArgumentAcceptingOptionSpec<String> mavenRootsOption;
@@ -168,5 +170,5 @@ public class FMLServiceProvider implements ITransformationService {
             ImmediateWindowHandler.crash(message);
             throw new IllegalStateException(message, e);
         }
-    }
+    }*/
 }

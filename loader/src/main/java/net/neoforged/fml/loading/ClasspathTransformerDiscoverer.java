@@ -8,7 +8,7 @@ package net.neoforged.fml.loading;
 import static net.neoforged.fml.loading.TransformerDiscovererConstants.shouldLoadInServiceLayer;
 
 import cpw.mods.modlauncher.api.NamedPath;
-import cpw.mods.modlauncher.serviceapi.ITransformerDiscoveryService;
+//import cpw.mods.modlauncher.serviceapi.ITransformerDiscoveryService;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -23,15 +23,15 @@ import java.util.List;
 import net.neoforged.fml.loading.targets.CommonLaunchHandler;
 import org.apache.logging.log4j.LogManager;
 
-public class ClasspathTransformerDiscoverer implements ITransformerDiscoveryService {
+public class ClasspathTransformerDiscoverer /*implements ITransformerDiscoveryService*/ {
     private final List<Path> legacyClasspath = Arrays.stream(System.getProperty("legacyClassPath", "").split(File.pathSeparator)).map(Path::of).toList();
 
-    @Override
+//    @Override
     public List<NamedPath> candidates(Path gameDirectory) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
+//    @Override
     public List<NamedPath> candidates(final Path gameDirectory, final String launchTarget) {
         if (launchTarget != null && launchTarget.contains("dev")) {
             return scan();

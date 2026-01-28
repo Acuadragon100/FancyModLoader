@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.neoforged.fml.ModLoadingException;
 import net.neoforged.fml.ModLoadingIssue;
-import net.neoforged.jarjar.selection.JarSelector;
 import net.neoforged.neoforgespi.language.IModInfo;
 import net.neoforged.neoforgespi.locating.IDependencyLocator;
 import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
@@ -37,6 +36,7 @@ public class JarInJarDependencyLocator implements IDependencyLocator {
 
     @Override
     public void scanMods(List<IModFile> loadedMods, IDiscoveryPipeline pipeline) {
+        /*
         List<IModFile> dependenciesToLoad = JarSelector.detectAndSelect(
                 loadedMods,
                 this::loadResourceFromModFile,
@@ -52,8 +52,10 @@ public class JarInJarDependencyLocator implements IDependencyLocator {
                 pipeline.addModFile(modFile);
             }
         }
+         */
     }
 
+    /*
     @SuppressWarnings("resource")
     protected Optional<IModFile> loadModFileFrom(IModFile file, final Path path, IDiscoveryPipeline pipeline) {
         try {
@@ -139,4 +141,5 @@ public class JarInJarDependencyLocator implements IDependencyLocator {
     public String toString() {
         return "jarinjar";
     }
+     */
 }

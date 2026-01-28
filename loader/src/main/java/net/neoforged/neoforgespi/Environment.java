@@ -6,7 +6,7 @@
 package net.neoforged.neoforgespi;
 
 import cpw.mods.modlauncher.api.IEnvironment;
-import cpw.mods.modlauncher.api.ITransformationService;
+//import cpw.mods.modlauncher.api.ITransformationService;
 import cpw.mods.modlauncher.api.TypesafeMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;

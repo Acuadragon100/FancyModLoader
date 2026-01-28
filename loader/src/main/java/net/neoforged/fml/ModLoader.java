@@ -74,10 +74,10 @@ public final class ModLoader {
     private static ModList modList;
 
     static {
-        CrashReportCallables.registerCrashCallable("ModLauncher", FMLLoader::getLauncherInfo);
-        CrashReportCallables.registerCrashCallable("ModLauncher launch target", FMLLoader::launcherHandlerName);
-        CrashReportCallables.registerCrashCallable("ModLauncher services", ModLoader::computeModLauncherServiceList);
-        CrashReportCallables.registerCrashCallable("FML Language Providers", ModLoader::computeLanguageList);
+//        CrashReportCallables.registerCrashCallable("ModLauncher", FMLLoader::getLauncherInfo);
+//        CrashReportCallables.registerCrashCallable("ModLauncher launch target", FMLLoader::launcherHandlerName);
+//        CrashReportCallables.registerCrashCallable("ModLauncher services", ModLoader::computeModLauncherServiceList);
+//        CrashReportCallables.registerCrashCallable("FML Language Providers", ModLoader::computeLanguageList);
     }
 
     private static String computeLanguageList() {

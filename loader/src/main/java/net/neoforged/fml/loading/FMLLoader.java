@@ -9,8 +9,8 @@ import com.mojang.logging.LogUtils;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import cpw.mods.modlauncher.api.ILaunchHandlerService;
-import cpw.mods.modlauncher.api.ITransformationService;
-import cpw.mods.modlauncher.api.IncompatibleEnvironmentException;
+//import cpw.mods.modlauncher.api.ITransformationService;
+//import cpw.mods.modlauncher.api.IncompatibleEnvironmentException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import net.neoforged.accesstransformer.api.AccessTransformerEngine;
-import net.neoforged.accesstransformer.ml.AccessTransformerService;
+//import net.neoforged.accesstransformer.api.AccessTransformerEngine;
+//import net.neoforged.accesstransformer.ml.AccessTransformerService;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.asm.RuntimeDistCleaner;
 import net.neoforged.fml.loading.mixin.DeferredMixinConfigRegistration;
@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 
 public class FMLLoader {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static AccessTransformerEngine accessTransformer;
+//    private static AccessTransformerEngine accessTransformer;
     private static LanguageProviderLoader languageProviderLoader;
     private static Dist dist;
     private static LoadingModList loadingModList;
@@ -52,6 +52,7 @@ public class FMLLoader {
     @Nullable
     private static ModuleLayer gameLayer;
 
+    /*
     static void onInitialLoad(IEnvironment environment) throws IncompatibleEnvironmentException {
         final String version = LauncherVersion.getVersion();
         LOGGER.debug(LogMarkers.CORE, "FML {} loading", version);
@@ -92,6 +93,7 @@ public class FMLLoader {
             throw new IncompatibleEnvironmentException("Missing NightConfig");
         }
     }
+     */
 
     static void setupLaunchHandler(IEnvironment environment, VersionInfo versionInfo) {
         var launchTarget = environment.getProperty(IEnvironment.Keys.LAUNCHTARGET.get()).orElse("MISSING");
@@ -117,6 +119,7 @@ public class FMLLoader {
         runtimeDistCleaner.setDistribution(dist);
     }
 
+    /*
     public static List<ITransformationService.Resource> beginModScan(ILaunchContext launchContext) {
         var additionalLocators = new ArrayList<IModFileCandidateLocator>();
         commonLaunchHandler.collectAdditionalModFileLocators(versionInfo, additionalLocators::add);
@@ -137,6 +140,7 @@ public class FMLLoader {
         }
         return List.of(modValidator.getModResources());
     }
+     */
 
     public static LanguageProviderLoader getLanguageLoadingProvider() {
         return languageProviderLoader;
@@ -144,11 +148,13 @@ public class FMLLoader {
 
     public static void addAccessTransformer(Path atPath, ModFile modName) {
         LOGGER.debug(LogMarkers.SCAN, "Adding Access Transformer in {}", modName.getFilePath());
+        /*
         try {
             accessTransformer.loadATFromPath(atPath);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load AT at " + atPath.toAbsolutePath(), e);
         }
+         */
     }
 
     public static Dist getDist() {
@@ -171,11 +177,11 @@ public class FMLLoader {
     }
 
     public static String getLauncherInfo() {
-        return Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.MLIMPL_VERSION.get()).orElse("MISSING");
+        return "Kilt" /*Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.MLIMPL_VERSION.get()).orElse("MISSING")*/;
     }
 
     public static List<Map<String, String>> modLauncherModList() {
-        return Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.MODLIST.get()).orElseGet(Collections::emptyList);
+        return List.of() /*Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.MODLIST.get()).orElseGet(Collections::emptyList)*/;
     }
 
     public static String launcherHandlerName() {

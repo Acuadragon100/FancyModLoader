@@ -8,7 +8,7 @@ package net.neoforged.fml.loading;
 import com.mojang.logging.LogUtils;
 import cpw.mods.modlauncher.api.LambdaExceptionUtils;
 import cpw.mods.modlauncher.api.NamedPath;
-import cpw.mods.modlauncher.serviceapi.ITransformerDiscoveryService;
+//import cpw.mods.modlauncher.serviceapi.ITransformerDiscoveryService;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.AccessDeniedException;
@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 
-public class ModDirTransformerDiscoverer implements ITransformerDiscoveryService {
+public class ModDirTransformerDiscoverer /*implements ITransformerDiscoveryService*/ {
+    /*
     private static final Logger LOGGER = LogUtils.getLogger();
     private UncheckedIOException alreadyFailed;
 
@@ -91,4 +92,5 @@ public class ModDirTransformerDiscoverer implements ITransformerDiscoveryService
 
         return TransformerDiscovererConstants.shouldLoadInServiceLayer(path);
     }
+     */
 }

@@ -5,6 +5,7 @@
 
 package net.neoforged.fml.loading;
 
+/*
 import cpw.mods.modlauncher.api.ITransformer;
 import java.io.IOException;
 import java.io.Reader;
@@ -14,6 +15,7 @@ import net.neoforged.coremod.CoreModScriptingEngine;
 import net.neoforged.coremod.ICoreModScriptSource;
 import net.neoforged.fml.loading.moddiscovery.CoreModFile;
 import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
+ */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +32,7 @@ class CoreModScriptLoader {
     /**
      * Enumerate script-based coremods.
      */
-    public static List<ITransformer<?>> loadCoreModScripts(List<ModFileInfo> modFileInfos) {
+    /*public static List<ITransformer<?>> loadCoreModScripts(List<ModFileInfo> modFileInfos) {
         CoreModScriptingEngine engine;
         try {
             engine = new CoreModScriptingEngine();
@@ -74,5 +76,5 @@ class CoreModScriptLoader {
         public String toString() {
             return "{Name: " + coreMod.name() + ", Owner: " + getOwnerId() + " @ " + getDebugSource() + "}";
         }
-    }
+    }*/
 }

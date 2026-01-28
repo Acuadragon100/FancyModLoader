@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import net.neoforged.fml.loading.LogMarkers;
-import net.neoforged.jarjar.nio.pathfs.PathFileSystem;
+//import net.neoforged.jarjar.nio.pathfs.PathFileSystem;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IOrderedProvider;
 import org.jetbrains.annotations.ApiStatus;
@@ -99,14 +99,14 @@ public final class ServiceLoaderUtil {
      * while maintaining context in the return (such as "&lt;nested path>" from "&lt;outer jar>").
      */
     private static String unwrapPath(ILaunchContext context, Path path) {
-        if (path.getFileSystem() instanceof PathFileSystem pathFileSystem) {
+        /*if (path.getFileSystem() instanceof PathFileSystem pathFileSystem) {
             return unwrapPath(context, pathFileSystem.getTarget());
         } else if (path.getFileSystem() instanceof UnionFileSystem unionFileSystem) {
             if (path.equals(unionFileSystem.getRoot())) {
                 return unwrapPath(context, unionFileSystem.getPrimaryPath());
             }
             return unwrapPath(context, unionFileSystem.getPrimaryPath()) + " > " + relativizePath(context, path);
-        }
+        }*/
         return relativizePath(context, path);
     }
 
