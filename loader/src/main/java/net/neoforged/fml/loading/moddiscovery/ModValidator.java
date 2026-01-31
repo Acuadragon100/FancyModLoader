@@ -4,28 +4,27 @@
  */
 
 package net.neoforged.fml.loading.moddiscovery;
-/*
+
 import com.mojang.logging.LogUtils;
-import cpw.mods.modlauncher.api.IModuleLayerManager;
-import cpw.mods.modlauncher.api.ITransformationService;
+//import cpw.mods.modlauncher.api.IModuleLayerManager;
+//import cpw.mods.modlauncher.api.ITransformationService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
-import net.neoforged.fml.ModLoadingException;
+//import java.util.stream.Stream;
+//import net.neoforged.fml.ModLoadingException;
 import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.fml.loading.ImmediateWindowHandler;
 import net.neoforged.fml.loading.LoadingModList;
 import net.neoforged.fml.loading.LogMarkers;
-import net.neoforged.fml.loading.ModSorter;
-import net.neoforged.fml.loading.modscan.BackgroundScanHandler;
+//import net.neoforged.fml.loading.ModSorter;
+//import net.neoforged.fml.loading.modscan.BackgroundScanHandler;
 import net.neoforged.neoforgespi.locating.IModFile;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
- */
 
-public class ModValidator {/*
+public class ModValidator {
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Map<IModFile.Type, List<ModFile>> modFiles;
     private final List<ModFile> candidatePlugins;
@@ -63,6 +62,7 @@ public class ModValidator {/*
         }
     }
 
+    /*
     public ITransformationService.Resource getPluginResources() {
         return new ITransformationService.Resource(IModuleLayerManager.Layer.PLUGIN, this.candidatePlugins.stream().map(IModFile::getSecureJar).toList());
     }
