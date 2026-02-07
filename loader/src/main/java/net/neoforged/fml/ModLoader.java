@@ -27,7 +27,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.neoforged.bus.api.Event;
@@ -152,29 +151,6 @@ public final class ModLoader {
 
         KiltLoader.Companion.getInstance().loadMods();
         Kilt.Companion.load(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER);
-
-        for (NeoForgeMod mod : KiltLoader.Companion.getInstance().getMods()) {
-            NeoForgeModConfigEvents.loading(mod.getModId()).register(it -> {
-                var prev = ModLoadingContext.get().getActiveContainer();
-                ModLoadingContext.get().setActiveContainer(mod.getContainer());
-                mod.getEventBus().post(new ModConfigEvent.Loading(it));
-                ModLoadingContext.get().setActiveContainer(prev);
-            });
-
-            NeoForgeModConfigEvents.reloading(mod.getModId()).register(it -> {
-                var prev = ModLoadingContext.get().getActiveContainer();
-                ModLoadingContext.get().setActiveContainer(mod.getContainer());
-                mod.getEventBus().post(new ModConfigEvent.Reloading(it));
-                ModLoadingContext.get().setActiveContainer(prev);
-            });
-
-            NeoForgeModConfigEvents.unloading(mod.getModId()).register(it -> {
-                var prev = ModLoadingContext.get().getActiveContainer();
-                ModLoadingContext.get().setActiveContainer(mod.getContainer());
-                mod.getEventBus().post(new ModConfigEvent.Unloading(it));
-                ModLoadingContext.get().setActiveContainer(prev);
-            });
-        }
 
         constructMods(syncExecutor, parallelExecutor, periodicTask);
     }
