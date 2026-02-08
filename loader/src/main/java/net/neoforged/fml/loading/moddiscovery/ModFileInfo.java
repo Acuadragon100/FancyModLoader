@@ -142,6 +142,21 @@ public class ModFileInfo implements IModFileInfo, IConfigurable {
             .toList();
     }
 
+    // Kilt: Copy from existing mod file info.
+    @ApiStatus.Internal
+    public ModFileInfo(IModFileInfo info) {
+        this.config = info.getConfig();
+        this.modFile = new ModFile(info.getFile());
+        this.issueURL = null;
+        this.languageSpecs = info.requiredLanguageLoaders();
+        this.showAsResourcePack = info.showAsResourcePack();
+        this.showAsDataPack = info.showAsDataPack();
+        this.mods = info.getMods();
+        this.properties = info.getFileProperties();
+        this.license = info.getLicense();
+        this.usesServices = info.usesServices();
+    }
+
     public ModFileInfo(final ModFile file, final IConfigurable config, Consumer<IModFileInfo> configFileConsumer, final List<LanguageSpec> languageSpecs) {
         this(file, config, configFileConsumer);
         this.languageSpecs.addAll(languageSpecs);

@@ -78,6 +78,8 @@ public class ModFile implements IModFile {
         this.modFileInfo = ModFileParser.readModList(this, this.parser);
     }
 
+    // Kilt: Copy from existing NeoForge mod.
+    @ApiStatus.Internal
     public ModFile(NeoForgeMod kiltMod) {
         this.jarVersion = kiltMod.getVersion().toString();
         this.parser = ModFileParser::modsTomlParser;
@@ -95,6 +97,18 @@ public class ModFile implements IModFile {
         }
 
         this.manifest = kiltMod.getManifest();
+    }
+
+    // Kilt: Copy from an implementing interface.
+    @ApiStatus.Internal
+    public ModFile(IModFile existingFile) {
+        this.jar = existingFile.getSecureJar();
+        this.parser = $ -> null; // Kilt: We're just gonna return null always, I guess.
+
+        this.manifest = existingFile.getSecureJar().moduleDataProvider().getManifest();
+        this.modFileType = existingFile.getType();
+        this.jarVersion = Optional.ofNullable(this.manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION)).orElse("0.0NONE");
+        this.modFileInfo = existingFile.getModFileInfo();
     }
 
     @Override

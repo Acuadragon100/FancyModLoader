@@ -10,14 +10,7 @@ import cpw.mods.modlauncher.api.LambdaExceptionUtils;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.ModLoadingIssue;
@@ -31,6 +24,7 @@ import net.neoforged.fml.loading.modscan.BackgroundScanHandler;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.slf4j.Logger;
+import xyz.bluspring.kilt.Kilt;
 
 /**
  * Master list of all mods <em>in the loading context. This class cannot refer outside the
@@ -38,6 +32,104 @@ import org.slf4j.Logger;
  */
 public class LoadingModList {
     private static final Logger LOGGER = LogUtils.getLogger();
+
+    // Kilt: Rework to point towards Kilt Loader instead.
+    private static final LoadingModList INSTANCE = new LoadingModList();
+
+    public static LoadingModList get() {
+        return INSTANCE;
+    }
+
+    // Kilt: Not properly supported, we're not using this.
+    public static LoadingModList of(List<ModFile> plugins, List<ModFile> modFiles, List<ModInfo> sortedList, List<ModLoadingIssue> issues, Map<ModInfo, List<ModInfo>> modDependencies) {
+        return INSTANCE;
+    }
+
+    public List<IModFileInfo> getPlugins() {
+        return Kilt.Companion.getLoader().getMods().stream().map(ModFileInfo::new).map(e -> (IModFileInfo) e).toList();
+    }
+
+    public List<ModFileInfo> getModFiles() {
+        return Kilt.Companion.getLoader().getMods().stream().map(ModFileInfo::new).toList();
+    }
+
+    public Path findResource(final String className) {
+        for (ModFileInfo mf : this.getModFiles()) {
+            final Path resource = mf.getFile().findResource(className);
+            if (Files.exists(resource)) return resource;
+        }
+        return null;
+    }
+
+    public Enumeration<URL> findAllURLsForResource(final String resName) {
+        final String resourceName;
+        // strip a leading slash
+        if (resName.startsWith("/")) {
+            resourceName = resName.substring(1);
+        } else {
+            resourceName = resName;
+        }
+        return new Enumeration<URL>() {
+            private final Iterator<ModFileInfo> modFileIterator = getModFiles().iterator();
+            private URL next;
+
+            @Override
+            public boolean hasMoreElements() {
+                if (next != null) return true;
+                next = findNextURL();
+                return next != null;
+            }
+
+            @Override
+            public URL nextElement() {
+                if (next == null) {
+                    next = findNextURL();
+                    if (next == null) throw new NoSuchElementException();
+                }
+                URL result = next;
+                next = null;
+                return result;
+            }
+
+            private URL findNextURL() {
+                while (modFileIterator.hasNext()) {
+                    final ModFileInfo next = modFileIterator.next();
+                    final Path resource = next.getFile().findResource(resourceName);
+                    if (Files.exists(resource)) {
+                        return LambdaExceptionUtils.uncheck(() -> new URL("modjar://" + next.getMods().get(0).getModId() + "/" + resourceName));
+                    }
+                }
+                return null;
+            }
+        };
+    }
+
+    public ModFileInfo getModFileById(String modid) {
+        var kiltMod = Kilt.Companion.getLoader().getMod(modid);
+
+        if (kiltMod == null)
+            return null;
+
+        return (ModFileInfo) kiltMod.getOwningFile();
+    }
+
+    public List<ModInfo> getMods() {
+        return Kilt.Companion.getLoader().getMods().stream().map(ModInfo::new).toList();
+    }
+
+    public List<ModInfo> getDependencies(IModInfo mod) {
+        return List.of(); // Kilt TODO: is this bad?
+    }
+
+    public boolean hasErrors() {
+        return false; // Kilt: We just error in Kilt's loader itself.
+    }
+
+    public List<ModLoadingIssue> getModLoadingIssues() {
+        return Collections.emptyList(); // Kilt: No reason to give this.
+    }
+
+    /*
     private static LoadingModList INSTANCE;
     private final List<IModFileInfo> plugins;
     private final List<ModFileInfo> modFiles;
@@ -194,6 +286,7 @@ public class LoadingModList {
      * either because the given mod has an {@link IModInfo.Ordering#AFTER} constraint on the dependency,
      * or because the dependency has a {@link IModInfo.Ordering#BEFORE} constraint on the given mod.
      */
+    /*
     public List<ModInfo> getDependencies(IModInfo mod) {
         return this.modDependencies.getOrDefault(mod, List.of());
     }
@@ -205,4 +298,5 @@ public class LoadingModList {
     public List<ModLoadingIssue> getModLoadingIssues() {
         return modLoadingIssues;
     }
+    */
 }

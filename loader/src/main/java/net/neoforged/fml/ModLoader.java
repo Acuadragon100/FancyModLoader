@@ -70,7 +70,7 @@ public final class ModLoader {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final List<ModLoadingIssue> loadingIssues = new ArrayList<>();
-    private static ModList modList;
+    private static ModList modList = ModList.get();
 
     static {
 //        CrashReportCallables.registerCrashCallable("ModLauncher", FMLLoader::getLauncherInfo);

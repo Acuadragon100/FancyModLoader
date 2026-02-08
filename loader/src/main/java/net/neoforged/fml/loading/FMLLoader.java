@@ -39,7 +39,7 @@ public class FMLLoader {
 //    private static AccessTransformerEngine accessTransformer;
     private static LanguageProviderLoader languageProviderLoader;
     private static Dist dist;
-    private static LoadingModList loadingModList;
+    private static LoadingModList loadingModList = LoadingModList.get();
     private static RuntimeDistCleaner runtimeDistCleaner;
     private static Path gamePath;
     private static VersionInfo versionInfo;

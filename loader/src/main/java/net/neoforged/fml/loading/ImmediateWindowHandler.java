@@ -91,23 +91,25 @@ public class ImmediateWindowHandler {
     }
 
     public static void acceptGameLayer(final ModuleLayer layer) {
-        provider.updateModuleReads(layer);
+//        provider.updateModuleReads(layer);
     }
 
     public static void renderTick() {
-        provider.periodicTick();
+//        provider.periodicTick();
     }
 
     public static String getGLVersion() {
-        return provider.getGLVersion();
+//        return provider.getGLVersion();
+        // TODO: should probably make this better i'm ngl
+        return "4.6";
     }
 
     public static void updateProgress(final String message) {
-        earlyProgress.label(message);
+//        earlyProgress.label(message);
     }
 
     public static void crash(final String message) {
-        provider.crash(message);
+//        provider.crash(message);
     }
 
     private record DummyProvider() implements ImmediateWindowProvider {
