@@ -33,6 +33,8 @@ import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import xyz.bluspring.kilt.loader.Constants;
+import xyz.bluspring.kilt.loader.KiltLoader;
 
 public class FMLLoader {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -42,7 +44,12 @@ public class FMLLoader {
     private static LoadingModList loadingModList = LoadingModList.get();
     private static RuntimeDistCleaner runtimeDistCleaner;
     private static Path gamePath;
-    private static VersionInfo versionInfo;
+    private static VersionInfo versionInfo = new VersionInfo( // Kilt: Manual setup, idc
+        Constants.NEOFORGE_API_VERSION.toString(),
+        Constants.NEOFORGE_LOADER_VERSION.toString(),
+        KiltLoader.Companion.getMC_VERSION().getFriendlyString(),
+        "intermediary"
+    );
     private static String launchHandlerName;
     private static CommonLaunchHandler commonLaunchHandler;
     public static Runnable progressWindowTick;

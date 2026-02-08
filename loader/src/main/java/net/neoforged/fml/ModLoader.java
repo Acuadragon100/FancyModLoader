@@ -401,7 +401,9 @@ public final class ModLoader {
      *         If you are running in a Mixin before mod loading has actually started, check {@link LoadingModList#hasErrors()} instead.
      */
     public static boolean hasErrors() {
-        return !loadingIssues.isEmpty() && loadingIssues.stream().anyMatch(issue -> issue.severity() == ModLoadingIssue.Severity.ERROR);
+        // Kilt: BRING IT ON!!!
+        return false;
+//        return !loadingIssues.isEmpty() && loadingIssues.stream().anyMatch(issue -> issue.severity() == ModLoadingIssue.Severity.ERROR);
     }
 
     @ApiStatus.Internal
