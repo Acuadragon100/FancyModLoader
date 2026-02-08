@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.impl.launch.FabricLauncherBase;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.Bindings;
@@ -57,7 +60,7 @@ public class AutomaticEventSubscriber {
                     if (bus != null) {
                         LOGGER.debug(LOADING, "Auto-subscribing {} to {}", ad.clazz().getClassName(), busTarget);
 
-                        bus.register(Class.forName(ad.clazz().getClassName(), true, layer.getClassLoader()));
+                        bus.register(Class.forName(ad.clazz().getClassName(), true, /*layer.getClassLoader()*/ FabricLauncherBase.getLauncher().getTargetClassLoader())); // Kilt: No modules.
                     }
                 } catch (Exception e) {
                     LOGGER.fatal(LOADING, "Failed to register class {} with @EventBusSubscriber annotation", ad.clazz(), e);

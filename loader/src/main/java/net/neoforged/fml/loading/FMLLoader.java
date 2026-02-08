@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 //import net.neoforged.accesstransformer.api.AccessTransformerEngine;
 //import net.neoforged.accesstransformer.ml.AccessTransformerService;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.asm.RuntimeDistCleaner;
 import net.neoforged.fml.loading.mixin.DeferredMixinConfigRegistration;
@@ -40,22 +42,24 @@ public class FMLLoader {
     private static final Logger LOGGER = LogUtils.getLogger();
 //    private static AccessTransformerEngine accessTransformer;
     private static LanguageProviderLoader languageProviderLoader;
-    private static Dist dist;
+
+    // Kilt: Manual setup, idc
+    private static Dist dist = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? Dist.CLIENT : Dist.DEDICATED_SERVER;;
     private static LoadingModList loadingModList = LoadingModList.get();
     private static RuntimeDistCleaner runtimeDistCleaner;
-    private static Path gamePath;
-    private static VersionInfo versionInfo = new VersionInfo( // Kilt: Manual setup, idc
+    private static Path gamePath = FabricLoader.getInstance().getGameDir();
+    private static VersionInfo versionInfo = new VersionInfo(
         Constants.NEOFORGE_API_VERSION.toString(),
         Constants.NEOFORGE_LOADER_VERSION.toString(),
         KiltLoader.Companion.getMC_VERSION().getFriendlyString(),
         "intermediary"
     );
-    private static String launchHandlerName;
+    private static String launchHandlerName = "kilt";
     private static CommonLaunchHandler commonLaunchHandler;
     public static Runnable progressWindowTick;
     private static ModValidator modValidator;
     public static BackgroundScanHandler backgroundScanHandler;
-    private static boolean production;
+    private static boolean production = !FabricLoader.getInstance().isDevelopmentEnvironment();
     @Nullable
     private static ModuleLayer gameLayer;
 
