@@ -55,6 +55,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import xyz.bluspring.kilt.Kilt;
 import xyz.bluspring.kilt.loader.KiltLoader;
 import xyz.bluspring.kilt.loader.mod.NeoForgeMod;
+import xyz.bluspring.knit.loader.KnitLoader;
 
 /**
  * Contains the logic to load mods, i.e. turn the {@link LoadingModList} into the {@link ModList},
@@ -149,8 +150,24 @@ public final class ModLoader {
         ModLoader.modList = modList;
         */
 
+        if (hasErrors()) {
+            for (var loadingError : getLoadingErrors()) {
+                LOGGER.fatal(CORE, "Error during pre-loading phase: {}", FMLTranslations.translateIssueEnglish(loadingError), loadingError.cause());
+            }
+            cancelLoading(modList);
+            throw new ModLoadingException(loadingIssues);
+        }
+
         KiltLoader.Companion.getInstance().loadMods();
         Kilt.Companion.load(FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER);
+
+        if (hasErrors()) {
+            for (var loadingError : getLoadingErrors()) {
+                LOGGER.fatal(CORE, "Failed to initialize mod containers: {}", loadingError, loadingError.cause());
+            }
+            cancelLoading(modList);
+            throw new ModLoadingException(loadingIssues);
+        }
 
         constructMods(syncExecutor, parallelExecutor, periodicTask);
     }
@@ -290,6 +307,22 @@ public final class ModLoader {
 
                 var errorCount = loadingIssues.size() - issueCountBefore;
                 LOGGER.fatal(LOADING, "Failed to wait for future {}, {} errors found", name, errorCount);
+
+                // Kilt: We want to know exactly what the issues were.
+                for (int i = issueCountBefore; i < loadingIssues.size(); i++) {
+                    var issue = loadingIssues.get(i);
+
+                    if (issue.cause() != null) {
+                        if (issue.affectedMod() != null) {
+                            LOGGER.fatal(LOADING, "Error {} with mod file {} ({}):", i, issue.affectedMod().getDisplayName(), issue.affectedMod().getModId());
+                        } else {
+                            LOGGER.fatal(LOADING, "Error {} occurred:", i);
+                        }
+
+                        issue.cause().printStackTrace();
+                    }
+                }
+
                 cancelLoading(modList);
                 throw new ModLoadingException(loadingIssues);
             } catch (Exception ignored) {}
@@ -401,9 +434,7 @@ public final class ModLoader {
      *         If you are running in a Mixin before mod loading has actually started, check {@link LoadingModList#hasErrors()} instead.
      */
     public static boolean hasErrors() {
-        // Kilt: BRING IT ON!!!
-        return false;
-//        return !loadingIssues.isEmpty() && loadingIssues.stream().anyMatch(issue -> issue.severity() == ModLoadingIssue.Severity.ERROR);
+        return !loadingIssues.isEmpty() && loadingIssues.stream().anyMatch(issue -> issue.severity() == ModLoadingIssue.Severity.ERROR);
     }
 
     @ApiStatus.Internal
