@@ -118,7 +118,7 @@ public class ModFileInfo implements IModFileInfo, IConfigurable {
         this.license = config.<String>getConfigElement("license")
             .orElse("");
         // Validate the license is set. Only apply this validation to mods.
-        if (this.license.isBlank()) {
+        if (this.license.isBlank() && !kiltMod.getModId().startsWith("jij_")) {
             throw new InvalidModFileException("Missing license", this);
         }
         this.showAsResourcePack = config.<Boolean>getConfigElement("showAsResourcePack")
@@ -134,7 +134,7 @@ public class ModFileInfo implements IModFileInfo, IConfigurable {
             .map(StringUtils::toURL)
             .orElse(null);
         final List<? extends IConfigurable> modConfigs = config.getConfigList("mods");
-        if (modConfigs.isEmpty()) {
+        if (modConfigs.isEmpty() && !kiltMod.getModId().startsWith("jij_")) {
             throw new InvalidModFileException("Missing mods list", this);
         }
         this.mods = modConfigs.stream()
