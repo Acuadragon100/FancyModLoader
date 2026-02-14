@@ -19,11 +19,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 //import net.neoforged.accesstransformer.api.AccessTransformerEngine;
 //import net.neoforged.accesstransformer.ml.AccessTransformerService;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.IBindingsProvider;
 import net.neoforged.fml.common.asm.RuntimeDistCleaner;
 import net.neoforged.fml.loading.mixin.DeferredMixinConfigRegistration;
 import net.neoforged.fml.loading.moddiscovery.ModDiscoverer;
@@ -33,6 +35,7 @@ import net.neoforged.fml.loading.modscan.BackgroundScanHandler;
 import net.neoforged.fml.loading.targets.CommonLaunchHandler;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import xyz.bluspring.kilt.loader.Constants;
@@ -62,6 +65,9 @@ public class FMLLoader {
     private static boolean production = !FabricLoader.getInstance().isDevelopmentEnvironment();
     @Nullable
     private static ModuleLayer gameLayer;
+
+    @Nullable
+    static volatile IBindingsProvider bindings;
 
     /*
     static void onInitialLoad(IEnvironment environment) throws IncompatibleEnvironmentException {
@@ -212,5 +218,22 @@ public class FMLLoader {
 
     public static VersionInfo versionInfo() {
         return versionInfo;
+    }
+
+    @ApiStatus.Internal
+    public static IBindingsProvider getBindings() {
+        if (bindings == null) {
+            synchronized (FMLLoader.class) {
+                if (bindings == null) {
+                    var providers = ServiceLoader.load(FMLLoader.getGameLayer(), IBindingsProvider.class)
+                            .stream().toList();
+                    if (providers.size() != 1) {
+                        throw new IllegalStateException("Could not find bindings provider");
+                    }
+                    bindings = providers.get(0).get();
+                }
+            }
+        }
+        return bindings;
     }
 }
