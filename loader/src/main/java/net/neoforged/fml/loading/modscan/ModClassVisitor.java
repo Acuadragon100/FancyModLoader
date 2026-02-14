@@ -17,12 +17,15 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import xyz.bluspring.kilt.loader.remap.fixers.mixin.MixinRemapper;
 
 public class ModClassVisitor extends ClassVisitor {
     private Type asmType;
     private Type asmSuperType;
     private Set<Type> interfaces;
     private final LinkedList<ModAnnotation> annotations = new LinkedList<>();
+
+    private boolean kilt$isMixin = false;
 
     public ModClassVisitor() {
         super(Opcodes.ASM9);
@@ -38,6 +41,14 @@ public class ModClassVisitor extends ClassVisitor {
     @Override
     public AnnotationVisitor visitAnnotation(final String annotationName, final boolean runtimeVisible) {
         ModAnnotation ann = new ModAnnotation(ElementType.TYPE, Type.getType(annotationName), this.asmType.getClassName());
+
+        // Kilt: Do not scan mixin classes.
+        if (ann.getASMType().equals(MixinRemapper.MIXIN_TYPE) || kilt$isMixin) {
+            annotations.clear();
+            kilt$isMixin = true;
+            return null;
+        }
+
         annotations.addFirst(ann);
         return new ModAnnotationVisitor(annotations, ann);
     }
