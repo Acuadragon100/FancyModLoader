@@ -33,6 +33,7 @@ import net.neoforged.fml.loading.moddiscovery.ModFile;
 import net.neoforged.fml.loading.moddiscovery.ModValidator;
 import net.neoforged.fml.loading.modscan.BackgroundScanHandler;
 import net.neoforged.fml.loading.targets.CommonLaunchHandler;
+import net.neoforged.neoforge.internal.NeoForgeBindings;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
 import org.jetbrains.annotations.ApiStatus;
@@ -67,7 +68,7 @@ public class FMLLoader {
     private static ModuleLayer gameLayer;
 
     @Nullable
-    static volatile IBindingsProvider bindings;
+    static volatile IBindingsProvider bindings = new NeoForgeBindings(); // Kilt: No modules >:D
 
     /*
     static void onInitialLoad(IEnvironment environment) throws IncompatibleEnvironmentException {
