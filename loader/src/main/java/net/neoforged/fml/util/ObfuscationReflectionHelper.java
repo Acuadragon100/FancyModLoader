@@ -9,12 +9,18 @@ import com.google.common.base.Preconditions;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.StringJoiner;
+
+import kotlin.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Type;
+import xyz.bluspring.kilt.loader.remap.KiltRemapper;
 
 /**
  * Some reflection helper code.
@@ -103,11 +109,28 @@ public class ObfuscationReflectionHelper {
      * @throws NullPointerException        If {@code parameterTypes} is null.
      * @throws UnableToFindMethodException If the method could not be found.
      */
-    public static Method findMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+    public static Method findMethod(final Class<?> clazz, String methodName, final Class<?>... parameterTypes) {
         Preconditions.checkNotNull(clazz, "Class to find method on cannot be null.");
         Preconditions.checkNotNull(methodName, "Name of method to find cannot be null.");
         Preconditions.checkArgument(!methodName.isEmpty(), "Name of method to find cannot be empty.");
         Preconditions.checkNotNull(parameterTypes, "Parameter types of method to find cannot be null.");
+
+        // Kilt: Remap method
+        var methodSet = KiltRemapper.INSTANCE.getSrgMappedMethods().getOrDefault(methodName, Collections.emptyMap()).get(KiltRemapper.INSTANCE.unmapClass(clazz.getName().replace(".", "/")));
+        StringBuilder descriptorBuilder = new StringBuilder("(");
+
+        for (Class<?> parameterType : parameterTypes) {
+            descriptorBuilder.append(Type.getDescriptor(parameterType));
+        }
+        descriptorBuilder.append(")");
+
+        var descriptor = descriptorBuilder.toString();
+
+        for (Pair<@NotNull String, @NotNull String> pair : methodSet) {
+            if (pair.getSecond().startsWith(descriptor)) {
+                methodName = pair.getFirst();
+            }
+        }
 
         try {
             Method m = clazz.getDeclaredMethod(methodName, parameterTypes);
@@ -169,10 +192,13 @@ public class ObfuscationReflectionHelper {
      * @throws IllegalArgumentException   If {@code fieldName} is empty.
      * @throws UnableToFindFieldException If the field could not be found.
      */
-    public static <T> Field findField(final Class<? super T> clazz, final String fieldName) {
+    public static <T> Field findField(final Class<? super T> clazz, String fieldName) {
         Preconditions.checkNotNull(clazz, "Class to find field on cannot be null.");
         Preconditions.checkNotNull(fieldName, "Name of field to find cannot be null.");
         Preconditions.checkArgument(!fieldName.isEmpty(), "Name of field to find cannot be empty.");
+
+        // Kilt: Remap field
+        fieldName = KiltRemapper.INSTANCE.getSrgMappedFields().getOrDefault(fieldName, Collections.emptyMap()).getOrDefault(KiltRemapper.INSTANCE.unmapClass(clazz.getName().replace(".", "/")), fieldName);
 
         try {
             Field f = clazz.getDeclaredField(fieldName);
