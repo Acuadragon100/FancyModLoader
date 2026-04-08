@@ -5,9 +5,6 @@
 
 package net.neoforged.fml.loading.moddiscovery;
 
-import com.google.common.collect.ImmutableMap;
-import com.mojang.logging.LogUtils;
-import cpw.mods.jarhandling.SecureJar;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -24,6 +21,10 @@ import java.util.function.Supplier;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
+
+import com.google.common.collect.ImmutableMap;
+import com.mojang.logging.LogUtils;
+import cpw.mods.jarhandling.SecureJar;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.LogMarkers;
 import net.neoforged.fml.loading.modscan.Scanner;
@@ -80,7 +81,7 @@ public class ModFile implements IModFile {
 
     // Kilt: Copy from existing NeoForge mod.
     @ApiStatus.Internal
-    public ModFile(NeoForgeMod kiltMod) {
+    public ModFile(NeoForgeMod kiltMod, ModFileInfo info) {
         this.jarVersion = kiltMod.getVersion().toString();
         this.parser = ModFileParser::modsTomlParser;
         this.jar = kiltMod.getSecureJar().get();
@@ -97,6 +98,7 @@ public class ModFile implements IModFile {
         }
 
         this.manifest = kiltMod.getManifest();
+        this.modFileInfo = info;
     }
 
     // Kilt: Copy from an implementing interface.

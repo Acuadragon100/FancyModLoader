@@ -5,8 +5,6 @@
 
 package net.neoforged.fml.loading.moddiscovery;
 
-import com.mojang.logging.LogUtils;
-import cpw.mods.modlauncher.api.LambdaExceptionUtils;
 import java.net.URL;
 import java.security.CodeSigner;
 import java.security.InvalidKeyException;
@@ -27,7 +25,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.security.auth.x500.X500Principal;
+
+import com.mojang.logging.LogUtils;
+import cpw.mods.modlauncher.api.LambdaExceptionUtils;
 import net.neoforged.fml.loading.LogMarkers;
 import net.neoforged.fml.loading.StringUtils;
 import net.neoforged.neoforgespi.language.IConfigurable;
@@ -103,7 +105,7 @@ public class ModFileInfo implements IModFileInfo, IConfigurable {
     @ApiStatus.Internal
     public ModFileInfo(NeoForgeMod kiltMod) {
         this.config = kiltMod.getConfig();
-        this.modFile = new ModFile(kiltMod);
+        this.modFile = new ModFile(kiltMod, this);
 
         // Kilt: copied from above
         // modloader is essential
