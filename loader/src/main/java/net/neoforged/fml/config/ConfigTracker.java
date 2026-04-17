@@ -5,19 +5,6 @@
 
 package net.neoforged.fml.config;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
-import com.electronwill.nightconfig.core.InMemoryCommentedFormat;
-import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
-import com.electronwill.nightconfig.core.concurrent.ConcurrentCommentedConfig;
-import com.electronwill.nightconfig.core.concurrent.SynchronizedConfig;
-import com.electronwill.nightconfig.core.file.FileWatcher;
-import com.electronwill.nightconfig.core.io.ParsingException;
-import com.electronwill.nightconfig.core.io.ParsingMode;
-import com.electronwill.nightconfig.core.io.WritingMode;
-import com.electronwill.nightconfig.toml.TomlFormat;
-import com.electronwill.nightconfig.toml.TomlParser;
-import com.electronwill.nightconfig.toml.TomlWriter;
-import com.mojang.logging.LogUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,6 +22,20 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
+
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.core.InMemoryCommentedFormat;
+import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
+import com.electronwill.nightconfig.core.concurrent.ConcurrentCommentedConfig;
+import com.electronwill.nightconfig.core.concurrent.SynchronizedConfig;
+import com.electronwill.nightconfig.core.file.FileWatcher;
+import com.electronwill.nightconfig.core.io.ParsingException;
+import com.electronwill.nightconfig.core.io.ParsingMode;
+import com.electronwill.nightconfig.core.io.WritingMode;
+import com.electronwill.nightconfig.toml.TomlFormat;
+import com.electronwill.nightconfig.toml.TomlParser;
+import com.electronwill.nightconfig.toml.TomlWriter;
+import com.mojang.logging.LogUtils;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.loading.FMLConfig;
@@ -46,6 +47,9 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import xyz.bluspring.kilt.loader.mod.fabric.WrappedFabricModContainer;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 /**
  * The configuration tracker manages various types of mod configurations.
@@ -77,6 +81,15 @@ public class ConfigTracker {
      */
     public ModConfig registerConfig(ModConfig.Type type, IConfigSpec spec, ModContainer container) {
         return registerConfig(type, spec, container, defaultConfigName(type, container.getModId()));
+    }
+
+    // Kilt: because Forge Config API Port sucks
+    public ModConfig registerConfig(ModConfig.Type type, IConfigSpec spec, String fabricModId) {
+        return registerConfig(type, spec, new WrappedFabricModContainer(FabricLoader.getInstance().getModContainer(fabricModId).orElseThrow()));
+    }
+
+    public ModConfig registerConfig(ModConfig.Type type, IConfigSpec spec, String fabricModId, String fileName) {
+        return registerConfig(type, spec, new WrappedFabricModContainer(FabricLoader.getInstance().getModContainer(fabricModId).orElseThrow()), fileName);
     }
 
     /**
