@@ -107,7 +107,12 @@ public class ModFile implements IModFile {
         this.jar = existingFile.getSecureJar();
         this.parser = $ -> null; // Kilt: We're just gonna return null always, I guess.
 
-        this.manifest = existingFile.getSecureJar().moduleDataProvider().getManifest();
+        if (existingFile.getSecureJar() != null) {
+            this.manifest = existingFile.getSecureJar().moduleDataProvider().getManifest();
+        } else {
+            this.manifest = new Manifest();
+        }
+
         this.modFileType = existingFile.getType();
         this.jarVersion = Optional.ofNullable(this.manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION)).orElse("0.0NONE");
         this.modFileInfo = existingFile.getModFileInfo();
