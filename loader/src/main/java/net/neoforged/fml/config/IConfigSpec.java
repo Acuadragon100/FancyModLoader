@@ -31,7 +31,7 @@ public interface IConfigSpec {
      *
      * @param config the configuration this spec is used by
      */
-    void validateSpec(ModConfig config);
+    default void validateSpec(ModConfig config) {} // Kilt: because Forge Config API Port sucks
 
     /**
      * Checks that a config is correct.
