@@ -104,7 +104,9 @@ public class ConfigTracker {
 
         trackConfig(modConfig);
 
-        if (modConfig.getType() == ModConfig.Type.STARTUP) {
+        if (modConfig.getType() == ModConfig.Type.STARTUP
+            || (modConfig.getType() != ModConfig.Type.SERVER && container instanceof WrappedFabricModContainer) // Kilt: Forge Config API Port loads the configs immediately.
+        ) {
             openConfig(modConfig, FMLPaths.CONFIGDIR.get(), null);
         }
 

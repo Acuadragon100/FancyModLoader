@@ -5,12 +5,13 @@
 
 package net.neoforged.fml.config;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
 import java.nio.file.Path;
+
+import com.electronwill.nightconfig.core.CommentedConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import org.jetbrains.annotations.Nullable;
 
-record LoadedConfig(CommentedConfig config, @Nullable Path path, ModConfig modConfig) implements IConfigSpec.ILoadedConfig {
+public record LoadedConfig(CommentedConfig config, @Nullable Path path, ModConfig modConfig) implements IConfigSpec.ILoadedConfig {
     @Override
     public void save() {
         if (path != null) {
