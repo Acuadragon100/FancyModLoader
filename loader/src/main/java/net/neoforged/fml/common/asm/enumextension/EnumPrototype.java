@@ -21,7 +21,7 @@ import net.neoforged.fml.ModLoadingIssue;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.objectweb.asm.Type;
 
-record EnumPrototype(String owningMod, String enumName, String fieldName, String ctorDesc, String fullCtorDesc, EnumParameters ctorParams) implements Comparable<EnumPrototype> {
+public record EnumPrototype(String owningMod, String enumName, String fieldName, String ctorDesc, String fullCtorDesc, EnumParameters ctorParams) implements Comparable<EnumPrototype> {
 
     private static final String ENUM_CTOR_BASE_DESC = "Ljava/lang/String;I";
     private static final Gson GSON = new Gson();
@@ -31,7 +31,7 @@ record EnumPrototype(String owningMod, String enumName, String fieldName, String
         return comp != 0 ? comp : fieldName.compareTo(other.fieldName);
     }
 
-    static List<EnumPrototype> load(IModInfo mod, Path path) {
+    public static List<EnumPrototype> load(IModInfo mod, Path path) {
         try (Reader reader = Files.newBufferedReader(path)) {
             JsonObject json = GSON.fromJson(reader, JsonObject.class);
 
