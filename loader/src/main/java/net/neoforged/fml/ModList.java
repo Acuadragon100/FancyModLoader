@@ -8,12 +8,9 @@ package net.neoforged.fml;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -26,7 +23,6 @@ import java.util.stream.Stream;
 
 import net.neoforged.fml.loading.LoadingModList;
 import net.neoforged.fml.loading.moddiscovery.ModFile;
-import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
 import net.neoforged.fml.loading.moddiscovery.ModInfo;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.IModInfo;
@@ -34,6 +30,8 @@ import net.neoforged.neoforgespi.language.ModFileScanData;
 import net.neoforged.neoforgespi.locating.IModFile;
 import xyz.bluspring.kilt.Kilt;
 import xyz.bluspring.kilt.loader.mod.NeoForgeMod;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 /**
  * Master list of all mods - game-side version. This is classloaded in the game scope and
@@ -146,8 +144,11 @@ public class ModList {
 
     public boolean isLoaded(String modTarget) {
         // Kilt: Point to loader
-        // Kilt TODO: check Fabric Loader too.
-        return Kilt.Companion.getLoader().hasMod(modTarget);
+        if (Kilt.Companion.getLoader().getNeoForgeToFabricMods().containsKey(modTarget))
+            return FabricLoader.getInstance().isModLoaded(Kilt.Companion.getLoader().getNeoForgeToFabricMods().get(modTarget));
+
+        return Kilt.Companion.getLoader().hasMod(modTarget) || FabricLoader.getInstance().isModLoaded(modTarget)
+            || FabricLoader.getInstance().isModLoaded(modTarget.replace("_", "-")); // Cloth Config detection, probably
 
 //        return this.indexedMods.containsKey(modTarget);
     }
@@ -190,7 +191,9 @@ public class ModList {
     }
 
     public void forEachModContainer(BiConsumer<String, ModContainer> modContainerConsumer) {
-        // Kilt TODO: fix
+        Kilt.Companion.getLoader().getMods().stream().map(NeoForgeMod::getContainer).forEach(container -> {
+            modContainerConsumer.accept(container.getModId(), container);
+        });
 //        indexedMods.forEach(modContainerConsumer);
     }
 
